@@ -65,55 +65,69 @@ app.hono.post("/decentral-perk", async (c) => {
     const username = data?.profileName || '';
 
     try {
-        const responseUserData = await fetch(`${baseUrlNeynarV2}/user/bulk?fids=${castFid}`, {
+      const responseUserData = await fetch(`${baseUrlNeynarV2}/user/bulk?fids=${castFid}`, {
           method: 'GET',
           headers: {
-            'accept': 'application/json',
-            'api_key': process.env.NEYNAR_API_KEY || '',
+              'accept': 'application/json',
+              'api_key': process.env.NEYNAR_API_KEY || '',
           },
-        });
-
-        const userFarcasterData = await responseUserData.json();
-        const userData = userFarcasterData.users[0];
-
-        // User connected wallet address
-        const eth_addresses = userData.verified_addresses.eth_addresses.toString().toLowerCase().split(',')[0];
-
-        // Get user tokens
-        const responseUserToken = await fetch(`${baseUrlReservoir}/users/${eth_addresses}/tokens/v10?tokens=${tokenAddress}`, {
-          headers: {
-            'accept': 'application/json',
-            'x-api-key': process.env.RESERVOIR_API_KEY || '',
-          },
-        });
-
-        const userTokenData = await responseUserToken.json();
-        let tokenCount = 0;
-
-        if (userTokenData && userTokenData.tokens && userTokenData.tokens.length > 0) {
-            tokenCount = userTokenData.tokens[0].ownership.tokenCount;
-            console.log("Token Count:", tokenCount);
-        } else {
-            console.log("No tokens found.");
-        }
-
-        let message = '';
-        if (tokenCount > 0) {
-            message = `@${username} - ${tokenCount} $DC`;
-            if (message.length > 30) {
-                message = `${tokenCount} $DC`;
-            }
-        } else {
-            message = `@${username} - 0 $DC`;
-            if (message.length > 30) {
-              message = `0 $DC`;
-            }
-        }
-
-        return c.json({ message });
+      });
+  
+      const userFarcasterData = await responseUserData.json();
+      const userData = userFarcasterData.users[0];
+  
+      // User connected wallet addresses
+      const ethAddresses = userData.verified_addresses.eth_addresses.map((address: string) => address.toLowerCase());
+  
+      // Array to store token counts for each address
+      const tokenCounts = [];
+  
+      for (const ethAddress of ethAddresses) {
+          try {
+              // Get user tokens for the current Ethereum address
+              const responseUserToken = await fetch(`${baseUrlReservoir}/users/${ethAddress}/tokens/v10?tokens=${tokenAddress}`, {
+                  headers: {
+                      'accept': 'application/json',
+                      'x-api-key': process.env.RESERVOIR_API_KEY || '',
+                  },
+              });
+  
+              const userTokenData = await responseUserToken.json();
+  
+              if (userTokenData && userTokenData.tokens && userTokenData.tokens.length > 0) {
+                  const tokenCount = userTokenData.tokens[0].ownership.tokenCount;
+                  tokenCounts.push(tokenCount);
+                  console.log(`Token Count for ${ethAddress}:`, tokenCount);
+              } else {
+                  console.log(`No tokens found for ${ethAddress}.`);
+                  tokenCounts.push(0);
+              }
+          } catch (error) {
+              console.error(`Error fetching tokens for ${ethAddress}:`, error);
+              tokenCounts.push(0);
+          }
+      }
+  
+      // Calculate total token count
+      const totalTokenCount = tokenCounts.reduce((acc, count) => acc + count, 0);
+  
+      let message = '';
+      if (totalTokenCount > 0) {
+          message = `@${username} - Total: ${totalTokenCount} $DC`;
+          if (message.length > 30) {
+              message = `Total: ${totalTokenCount} $DC`;
+          }
+      } else {
+          message = `@${username} - Total: 0 $DC`;
+          if (message.length > 30) {
+              message = `Total: 0 $DC`;
+          }
+      }
+  
+      return c.json({ message });
     } catch (fetchError) {
-        console.error("Error fetching user token data:", fetchError);
-        return c.json({ message: "Error fetching user token data. Try Again." }, 500);
+        console.error("Error fetching user data:", fetchError);
+        return c.json({ message: "Error fetching user data. Try Again." }, 500);
     }
   } else {
     return c.json({ message: "Unauthorized" }, 401);
