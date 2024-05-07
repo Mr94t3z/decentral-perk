@@ -192,7 +192,7 @@ app.frame("/search", (c) => {
       </Box>
     ),
     intents: [
-      <TextInput placeholder="Enter username e.g. 0x94t3z" />,
+      <TextInput placeholder="Enter username e.g. boothang" />,
       <Button action="/result">⇧ Submit</Button>,
       <Button action="/">⏏︎ Cancel</Button>,
     ],
