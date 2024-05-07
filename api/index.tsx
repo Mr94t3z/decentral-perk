@@ -20,10 +20,6 @@ const BG_IMAGE_URL = "https://remote-image.decentralized-content.com/image?url=h
 
 const CHANNEL_URL = "https://warpcast.com/~/channel/decentral-perk";
 
-const baseUrlReservoir = process.env.RESERVOIR_API_URL;
-
-const baseUrlNeynarV2 = process.env.BASE_URL_NEYNAR_V2;
-
 const tokenAddress = process.env.DECENTRAL_PERK_REWARDS_CARD_NFT_TOKEN_ADDRESS;
 
 init(process.env.AIRSTACK_API_KEY as string);
@@ -52,6 +48,9 @@ app.hono.get("/decentral-perk", async (c) => {
 app.hono.post("/decentral-perk", async (c) => {
   const body = await c.req.json();
 
+  const baseUrlReservoir = process.env.RESERVOIR_API_URL;
+  const baseUrlNeynarV2 = process.env.BASE_URL_NEYNAR_V2;
+
   const { isValid, message } = await validateFramesMessage(body);
   const castFid = message?.data.frameActionBody.castId?.fid as number;
   if (isValid) {
@@ -66,7 +65,7 @@ app.hono.post("/decentral-perk", async (c) => {
     const username = data?.profileName || '';
 
     try {
-        const responseUserData = await fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${castFid}`, {
+        const responseUserData = await fetch(`${baseUrlNeynarV2}/user/bulk?fids=${castFid}`, {
           method: 'GET',
           headers: {
             'accept': 'application/json',
