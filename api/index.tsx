@@ -3,11 +3,11 @@ import {
   getFarcasterUserDetails,
   validateFramesMessage,
 } from "@airstack/frames";
-import { Frog, Button } from "frog";
+import { Frog, Button, TextInput } from "frog";
 import { devtools } from "frog/dev";
 import { serveStatic } from "frog/serve-static";
 import { handle } from 'frog/vercel';
-import { Box, Heading, Text, VStack, vars } from "../lib/ui.js";
+import { Box, Image, Heading, Text, VStack, Spacer, vars } from "../lib/ui.js";
 import dotenv from 'dotenv';
 
 // Load environment variables from .env file
@@ -15,8 +15,6 @@ dotenv.config();
 
 const ACTION_URL =
   "https://warpcast.com/~/add-cast-action?url=https://decentral-perk.vercel.app/api/decentral-perk";
-
-const BG_IMAGE_URL = "https://remote-image.decentralized-content.com/image?url=https%3A%2F%2Fmagic.decentralized-content.com%2Fipfs%2Fbafkreibvmynk2n4k3edxxg6v65la4kequqipeqyox2aljnhmprdbk2bfwy&w=1920&q=75";
 
 const CHANNEL_URL = "https://warpcast.com/~/channel/decentral-perk";
 
@@ -113,14 +111,14 @@ app.hono.post("/decentral-perk", async (c) => {
   
       let message = '';
       if (totalTokenCount > 0) {
-          message = `@${username} - ${totalTokenCount} $DC`;
+          message = `@${username} - ${totalTokenCount} $DP#5`;
           if (message.length > 30) {
-              message = `${totalTokenCount} $DC`;
+              message = `${totalTokenCount} $DP#5`;
           }
       } else {
-          message = `@${username} - 0 $DC`;
+          message = `@${username} - 0 $DP#5`;
           if (message.length > 30) {
-              message = `0 $DC`;
+              message = `0 $DP#5`;
           }
       }
   
@@ -138,45 +136,67 @@ app.hono.post("/decentral-perk", async (c) => {
 // Frame handlers
 app.frame("/", (c) => {
   return c.res({
-    image: BG_IMAGE_URL,
+    image: (
+      <Box
+        grow
+        alignVertical="center"
+        // backgroundImage={`url(${BG_IMAGE_URL})`}
+        backgroundColor="bg"
+        padding="32"
+        height="100%"
+        border="1em solid rgb(255,255,255)"
+      >
+        <Image 
+          src="/nft.png"
+          objectFit="contain"
+        />
+      </Box>
+    ),
     intents: [
       <Button action="/search">Search</Button>,
       <Button.Link href={ACTION_URL}>Add Action</Button.Link>,
-      <Button.Link href={CHANNEL_URL}>DC Channel</Button.Link>,
+      <Button.Link href="https://warpcast.com/~/compose?text=DP%20Rewards%20Card%20NFT%20Checker&embeds[]=https://decentral-perk.vercel.app/api">Share</Button.Link>,
+      <Button.Link href={CHANNEL_URL}>Channel</Button.Link>,
     ],
   });
 });
 
 
-// app.frame("/search", (c) => {
-//   return c.res({
-//     image: (
-//       <Box
-//         grow
-//         alignVertical="center"
-//         backgroundImage={`url(${BG_IMAGE_URL})`}
-//         padding="32"
-//       >
-//         <VStack gap="4">
-//           <Heading color="fcPurple" align="center" size="48">
-//             Castcred
-//           </Heading>
-//           <Text align="center" size="18">
-//             +/- reputation weighted scale as an action bar.
-//           </Text>
-//           <Text decoration="underline" color="fcPurple" align="center"  size="14">
-//             By @injustcuz and @0x94t3z
-//           </Text>
-//         </VStack>
-//       </Box>
-//     ),
-//     intents: [
-//       <Button action="/search">Search</Button>,
-//       <Button.Link href={ACTION_URL}>Add Action</Button.Link>,
-//       <Button.Link href={CHANNEL_URL}>DC Channel</Button.Link>,
-//     ],
-//   });
-// });
+app.frame("/search", (c) => {
+  return c.res({
+    image: (
+      <Box
+        grow
+        alignVertical="center"
+        // backgroundImage={`url(${BG_IMAGE_URL})`}
+        backgroundColor="black"
+        padding="32"
+        height="100%"
+      >
+        <VStack gap="4">
+          <Heading color="fcPurple" decoration="underline" weight="900" align="center" size="32">
+            DP Rewards Card NFT Checker
+          </Heading>
+          <Spacer size="10" />
+          <Text align="center" color="green" size="16">
+            This action will check the number of $DP#5 tokens you have in your wallet.
+          </Text>
+          <Spacer size="22" />
+            <Box flexDirection="row" justifyContent="center">
+                <Text color="white" align="center" size="14">created by</Text>
+                <Spacer size="10" />
+                <Text color="bg" decoration="underline" align="center" size="14"> @0x94t3z</Text>
+              </Box>
+        </VStack>
+      </Box>
+    ),
+    intents: [
+      <TextInput placeholder="Enter username e.g. 0x94t3z" />,
+      <Button action="/search">⇧ Submit</Button>,
+      <Button action="/">⏏︎ Cancel</Button>,
+    ],
+  });
+});
 
 // @ts-ignore
 const isEdgeFunction = typeof EdgeFunction !== "undefined";
