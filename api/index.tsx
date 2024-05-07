@@ -34,7 +34,7 @@ export const app = new Frog({
 // Cast action GET handler
 app.hono.get("/decentral-perk", async (c) => {
   return c.json({
-    name: "Check $DP#5",
+    name: "DP Rewards Checker",
     icon: "search",
     description: "Action to check followers NFT Decentral Perk Rewards Card",
     aboutUrl: "https://github.com/Mr94t3z/decentral-perk",
