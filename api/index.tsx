@@ -17,7 +17,7 @@ const ACTION_URL =
   "https://warpcast.com/~/add-cast-action?url=https://decentral-perk.vercel.app/api/decentral-perk";
 
 const CAST_INTENS = 
-  "https://warpcast.com/~/compose?text=DP%20Rewards%20Card%20NFT%20Checker&embeds[]=https://decentral-perk.vercel.app/api"
+  "https://warpcast.com/~/compose?text=DP%20Rewards%20Checker&embeds[]=https://decentral-perk.vercel.app/api"
 
 const CHANNEL_URL = 
   "https://warpcast.com/~/channel/decentral-perk";
@@ -164,21 +164,21 @@ app.frame("/", (c) => {
   });
 });
 
-
+// Frame handler for search action
 app.frame("/search", (c) => {
   return c.res({
+    action: '/result',
     image: (
       <Box
         grow
         alignVertical="center"
-        // backgroundImage={`url(${BG_IMAGE_URL})`}
         backgroundColor="black"
         padding="32"
         height="100%"
       >
         <VStack gap="4">
           <Heading color="fcPurple" decoration="underline" weight="900" align="center" size="32">
-            DP Rewards Card NFT Checker
+            DP Rewards Checker
           </Heading>
           <Spacer size="10" />
           <Text align="center" color="green" size="16">
@@ -188,18 +188,172 @@ app.frame("/search", (c) => {
             <Box flexDirection="row" justifyContent="center">
                 <Text color="white" align="center" size="14">created by</Text>
                 <Spacer size="10" />
-                <Text color="bg" decoration="underline" align="center" size="14"> @0x94t3z</Text>
+                <Text color="fcPurple" decoration="underline" align="center" size="14"> @0x94t3z</Text>
               </Box>
         </VStack>
       </Box>
     ),
     intents: [
       <TextInput placeholder="Enter username e.g. 0x94t3z" />,
-      <Button action="/search">⇧ Submit</Button>,
+      <Button action="/result">⇧ Submit</Button>,
       <Button action="/">⏏︎ Cancel</Button>,
     ],
   });
 });
+
+// Frame handler for result
+app.frame("/result", async (c) => {
+  try {
+    const { inputText } = c;
+
+    const username = inputText;
+
+    console.log('Username:', username);
+
+    const baseUrlNeynarV2 = process.env.BASE_URL_NEYNAR_V2;
+    const baseUrlReservoir = process.env.BASE_URL_RESEVOIR;
+    const tokenAddress = process.env.DECENTRAL_PERK_REWARDS_CARD_NFT_TOKEN_ADDRESS;
+
+    const responseUserData = await fetch(`${baseUrlNeynarV2}/user/search?q=${username}`, {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'api_key': process.env.NEYNAR_API_KEY || '',
+        },
+    });
+
+    const userDataResponse = await responseUserData.json();
+
+    if (userDataResponse.result && userDataResponse.result.users && userDataResponse.result.users.length > 0) {
+        const userData = userDataResponse.result.users[0];
+        // User connected wallet addresses
+        const ethAddresses = userData.verified_addresses.eth_addresses.map((address: string) => address.toLowerCase());
+        // Array to store token counts for each address
+        const tokenCounts = [];
+        for (const ethAddress of ethAddresses) {
+            try {
+                // Get user tokens for the current Ethereum address
+                const responseUserToken = await fetch(`${baseUrlReservoir}/users/${ethAddress}/tokens/v10?tokens=${tokenAddress}`, {
+                    headers: {
+                        'accept': 'application/json',
+                        'x-api-key': process.env.RESERVOIR_API_KEY || '',
+                    },
+                });
+                const userTokenData = await responseUserToken.json();
+                if (userTokenData && userTokenData.tokens && userTokenData.tokens.length > 0) {
+                    const tokenCount = userTokenData.tokens[0].ownership.tokenCount;
+                    tokenCounts.push(tokenCount);
+                    console.log(`Token Count for ${ethAddress}:`, tokenCount);
+                } else {
+                    console.log(`No tokens found for ${ethAddress}.`);
+                    tokenCounts.push(0);
+                }
+            } catch (error) {
+                console.error(`Error fetching tokens for ${ethAddress}:`, error);
+                tokenCounts.push(0);
+            }
+        }
+        // Calculate total token count
+        const totalTokenCount = tokenCounts.reduce((acc, count) => acc + parseInt(count), 0);
+
+        return c.res({
+            image: (
+                <Box
+                    grow
+                    alignVertical="center"
+                    backgroundColor="black"
+                    padding="32"
+                    height="100%"
+                >
+                    <VStack gap="4">
+                        <Heading color="fcPurple" decoration="underline" weight="900" align="center" size="32">
+                            Result
+                        </Heading>
+                        <Spacer size="10" />
+                        <Text align="center" color="green" size="16">
+                          @{username}, you have {totalTokenCount ? `(${totalTokenCount}) $DP#5` : "(0) $DP#5"} tokens in your wallet.
+                        </Text>
+                        <Spacer size="22" />
+                        <Box flexDirection="row" justifyContent="center">
+                            <Text color="white" align="center" size="14">created by</Text>
+                            <Spacer size="10" />
+                            <Text color="fcPurple" decoration="underline" align="center" size="14"> @0x94t3z</Text>
+                        </Box>
+                    </VStack>
+                </Box>
+            ),
+            intents: [
+                <Button action="/">⎋ Home</Button>,
+                <Button action="/search">⏏︎ Back</Button>
+            ],
+        });
+    } else {
+        return c.res({
+            image: (
+                <Box
+                    grow
+                    alignVertical="center"
+                    backgroundColor="black"
+                    padding="32"
+                    height="100%"
+                >
+                    <VStack gap="4">
+                        <Heading color="fcPurple" decoration="underline" weight="900" align="center" size="32">
+                            Error
+                        </Heading>
+                        <Spacer size="10" />
+                        <Text align="center" color="red" size="16">
+                            User data not found.
+                        </Text>
+                        <Spacer size="22" />
+                        <Box flexDirection="row" justifyContent="center">
+                            <Text color="white" align="center" size="14">created by</Text>
+                            <Spacer size="10" />
+                            <Text color="fcPurple" decoration="underline" align="center" size="14"> @0x94t3z</Text>
+                        </Box>
+                    </VStack>
+                </Box>
+            ),
+            intents: [
+                <Button action="/search">⏏︎ Try Again</Button>
+            ],
+        });
+    }
+} catch (error) {
+      console.error("Error fetching user data:", error);
+      return c.res({
+        image: (
+          <Box
+              grow
+              alignVertical="center"
+              backgroundColor="black"
+              padding="32"
+              height="100%"
+          >
+              <VStack gap="4">
+                  <Heading color="fcPurple" decoration="underline" weight="900" align="center" size="32">
+                      Error
+                  </Heading>
+                  <Spacer size="10" />
+                  <Text align="center" color="red" size="16">
+                      Uh oh, something went wrong. Try again.
+                  </Text>
+                  <Spacer size="22" />
+                  <Box flexDirection="row" justifyContent="center">
+                      <Text color="white" align="center" size="14">created by</Text>
+                      <Spacer size="10" />
+                      <Text color="fcPurple" decoration="underline" align="center" size="14"> @0x94t3z</Text>
+                  </Box>
+              </VStack>
+          </Box>
+      ),
+      intents: [
+          <Button action="/search">⏏︎ Try Again</Button>
+      ],
+    });
+  }
+});
+
 
 // @ts-ignore
 const isEdgeFunction = typeof EdgeFunction !== "undefined";

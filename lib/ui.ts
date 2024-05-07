@@ -12,7 +12,7 @@ export const { Box, Image, Heading, Text, VStack, Spacer, vars } = createSystem(
   fonts: {
     default: [
       {
-        name: "Madimi One",
+        name: "Space Mono",
         source: "google",
       },
     ],
