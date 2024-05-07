@@ -20,11 +20,11 @@ const BG_IMAGE_URL = "https://remote-image.decentralized-content.com/image?url=h
 
 const CHANNEL_URL = "https://warpcast.com/~/channel/decentral-perk";
 
-const baseUrlReservoir = process.env.RESERVOIR_API_URL || '';
+const baseUrlReservoir = process.env.RESERVOIR_API_URL;
 
-const baseUrlNeynarV2 = process.env.NEYNAR_API_URL || '';
+const baseUrlNeynarV2 = process.env.BASE_URL_NEYNAR_V2;
 
-const tokenAddress = process.env.DECENTRAL_PERK_REWARDS_CARD_NFT_TOKEN_ADDRESS || '';
+const tokenAddress = process.env.DECENTRAL_PERK_REWARDS_CARD_NFT_TOKEN_ADDRESS;
 
 init(process.env.AIRSTACK_API_KEY as string);
 
