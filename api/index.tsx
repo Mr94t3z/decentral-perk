@@ -169,7 +169,7 @@ app.frame("/search", (c) => {
       <Box
         grow
         alignVertical="center"
-        backgroundColor="black"
+        backgroundColor="white"
         padding="32"
         height="100%"
       >
@@ -183,7 +183,7 @@ app.frame("/search", (c) => {
           </Text>
           <Spacer size="22" />
             <Box flexDirection="row" justifyContent="center">
-                <Text color="white" align="center" size="14">created by</Text>
+                <Text color="black" align="center" size="14">created by</Text>
                 <Spacer size="10" />
                 <Text color="fcPurple" decoration="underline" align="center" size="14"> @0x94t3z</Text>
               </Box>
@@ -258,7 +258,7 @@ app.frame("/result", async (c) => {
                 <Box
                     grow
                     alignVertical="center"
-                    backgroundColor="black"
+                    backgroundColor="white"
                     padding="32"
                     height="100%"
                 >
@@ -272,7 +272,7 @@ app.frame("/result", async (c) => {
                         </Text>
                         <Spacer size="22" />
                         <Box flexDirection="row" justifyContent="center">
-                            <Text color="white" align="center" size="14">created by</Text>
+                            <Text color="black" align="center" size="14">created by</Text>
                             <Spacer size="10" />
                             <Text color="fcPurple" decoration="underline" align="center" size="14"> @0x94t3z</Text>
                         </Box>
@@ -290,7 +290,7 @@ app.frame("/result", async (c) => {
                 <Box
                     grow
                     alignVertical="center"
-                    backgroundColor="black"
+                    backgroundColor="white"
                     padding="32"
                     height="100%"
                 >
@@ -304,7 +304,7 @@ app.frame("/result", async (c) => {
                         </Text>
                         <Spacer size="22" />
                         <Box flexDirection="row" justifyContent="center">
-                            <Text color="white" align="center" size="14">created by</Text>
+                            <Text color="black" align="center" size="14">created by</Text>
                             <Spacer size="10" />
                             <Text color="fcPurple" decoration="underline" align="center" size="14"> @0x94t3z</Text>
                         </Box>
@@ -323,7 +323,7 @@ app.frame("/result", async (c) => {
           <Box
               grow
               alignVertical="center"
-              backgroundColor="black"
+              backgroundColor="white"
               padding="32"
               height="100%"
           >
@@ -337,7 +337,7 @@ app.frame("/result", async (c) => {
                   </Text>
                   <Spacer size="22" />
                   <Box flexDirection="row" justifyContent="center">
-                      <Text color="white" align="center" size="14">created by</Text>
+                      <Text color="black" align="center" size="14">created by</Text>
                       <Spacer size="10" />
                       <Text color="fcPurple" decoration="underline" align="center" size="14"> @0x94t3z</Text>
                   </Box>
