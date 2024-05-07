@@ -53,13 +53,8 @@ app.hono.post("/decentral-perk", async (c) => {
   const body = await c.req.json();
 
   const { isValid, message } = await validateFramesMessage(body);
-  const interactorFid = message?.data?.fid;
   const castFid = message?.data.frameActionBody.castId?.fid as number;
   if (isValid) {
-    if (interactorFid === castFid) {
-      return c.json({ message: "Nice try." }, 400);
-    }
-
     const { data, error } = await getFarcasterUserDetails({
       fid: castFid,
     });
@@ -70,53 +65,57 @@ app.hono.post("/decentral-perk", async (c) => {
 
     const username = data?.profileName || '';
 
-    const response = await fetch(`${baseUrlNeynarV2}/user/bulk?fids=${castFid}`, {
-      method: 'GET',
-      headers: {
-        'accept': 'application/json',
-        'api_key': process.env.NEYNAR_API_KEY || '',
-      },
-    });
+    try {
+        const responseUserData = await fetch(`${baseUrlNeynarV2}/user/bulk?fids=${castFid}`, {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'api_key': process.env.NEYNAR_API_KEY || '',
+          },
+        });
 
-    const _data = await response.json();
-    const userData = _data.users[0];
+        const userFarcasterData = await responseUserData.json();
+        const userData = userFarcasterData.users[0];
 
-    // User connected wallet address
-    const eth_addresses = userData.verified_addresses.eth_addresses.toString().toLowerCase().split(',')[0];
+        // User connected wallet address
+        const eth_addresses = userData.verified_addresses.eth_addresses.toString().toLowerCase().split(',')[0];
 
-    // Get user tokens
-    const responseUserToken = await fetch(`${baseUrlReservoir}/users/${eth_addresses}/tokens/v10?tokens=${tokenAddress}`, {
-      headers: {
-        'accept': 'application/json',
-        'x-api-key': process.env.RESERVOIR_API_KEY || '',
-      },
-    });
+        // Get user tokens
+        const responseUserToken = await fetch(`${baseUrlReservoir}/users/${eth_addresses}/tokens/v10?tokens=${tokenAddress}`, {
+          headers: {
+            'accept': 'application/json',
+            'x-api-key': process.env.RESERVOIR_API_KEY || '',
+          },
+        });
 
-    const userTokenData = await responseUserToken.json();
-    let tokenCount = 0;
+        const userTokenData = await responseUserToken.json();
+        let tokenCount = 0;
 
-    if (userTokenData && userTokenData.tokens && userTokenData.tokens.length > 0) {
-        tokenCount = userTokenData.tokens[0].ownership.tokenCount;
-        console.log("Token Count:", tokenCount);
-    } else {
-        console.log("No tokens found.");
-    }
-
-    let message = '';
-    if (tokenCount > 0) {
-        message = `@${username} - ${tokenCount} $DC`;
-        if (message.length > 30) {
-            message = `${tokenCount} $DC`;
+        if (userTokenData && userTokenData.tokens && userTokenData.tokens.length > 0) {
+            tokenCount = userTokenData.tokens[0].ownership.tokenCount;
+            console.log("Token Count:", tokenCount);
+        } else {
+            console.log("No tokens found.");
         }
-    } else {
-        message = `@${username} - 0 $DC`;
-        if (message.length > 30) {
-          message = `0 $DC`;
+
+        let message = '';
+        if (tokenCount > 0) {
+            message = `@${username} - ${tokenCount} $DC`;
+            if (message.length > 30) {
+                message = `${tokenCount} $DC`;
+            }
+        } else {
+            message = `@${username} - 0 $DC`;
+            if (message.length > 30) {
+              message = `0 $DC`;
+            }
         }
+
+        return c.json({ message });
+    } catch (fetchError) {
+        console.error("Error fetching user token data:", fetchError);
+        return c.json({ message: "Error fetching user token data. Try Again." }, 500);
     }
-
-    return c.json({ message });
-
   } else {
     return c.json({ message: "Unauthorized" }, 401);
   }
