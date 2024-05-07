@@ -113,14 +113,14 @@ app.hono.post("/decentral-perk", async (c) => {
   
       let message = '';
       if (totalTokenCount > 0) {
-          message = `@${username} - ${totalTokenCount} $DP#5`;
+          message = `@${username} - ${totalTokenCount} DP #5`;
           if (message.length > 30) {
-              message = `${totalTokenCount} $DP#5`;
+              message = `${totalTokenCount} DP #5`;
           }
       } else {
-          message = `@${username} - 0 $DP#5`;
+          message = `@${username} - 0 DP #5`;
           if (message.length > 30) {
-              message = `0 $DP#5`;
+              message = `0 DP #5`;
           }
       }
   
