@@ -16,7 +16,11 @@ dotenv.config();
 const ACTION_URL =
   "https://warpcast.com/~/add-cast-action?url=https://decentral-perk.vercel.app/api/decentral-perk";
 
-const CHANNEL_URL = "https://warpcast.com/~/channel/decentral-perk";
+const CAST_INTENS = 
+  "https://warpcast.com/~/compose?text=DP%20Rewards%20Card%20NFT%20Checker&embeds[]=https://decentral-perk.vercel.app/api"
+
+const CHANNEL_URL = 
+  "https://warpcast.com/~/channel/decentral-perk";
 
 const tokenAddress = process.env.DECENTRAL_PERK_REWARDS_CARD_NFT_TOKEN_ADDRESS;
 
@@ -155,7 +159,7 @@ app.frame("/", (c) => {
     intents: [
       <Button action="/search">Search</Button>,
       <Button.Link href={ACTION_URL}>Add Action</Button.Link>,
-      <Button.Link href="https://warpcast.com/~/compose?text=DP%20Rewards%20Card%20NFT%20Checker&embeds[]=https://decentral-perk.vercel.app/api">Share</Button.Link>,
+      <Button.Link href={CAST_INTENS}>Share</Button.Link>,
       <Button.Link href={CHANNEL_URL}>Channel</Button.Link>,
     ],
   });
