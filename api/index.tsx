@@ -109,18 +109,18 @@ app.hono.post("/decentral-perk", async (c) => {
       }
   
       // Calculate total token count
-      const totalTokenCount = tokenCounts.reduce((acc, count) => acc + count, 0);
+      const totalTokenCount = tokenCounts.reduce((acc, count) => acc + parseInt(count), 0);
   
       let message = '';
       if (totalTokenCount > 0) {
-          message = `@${username} - Total: ${totalTokenCount} $DC`;
+          message = `@${username} - ${totalTokenCount} $DC`;
           if (message.length > 30) {
-              message = `Total: ${totalTokenCount} $DC`;
+              message = `${totalTokenCount} $DC`;
           }
       } else {
-          message = `@${username} - Total: 0 $DC`;
+          message = `@${username} - 0 $DC`;
           if (message.length > 30) {
-              message = `Total: 0 $DC`;
+              message = `0 $DC`;
           }
       }
   
