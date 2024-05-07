@@ -48,8 +48,8 @@ app.hono.get("/decentral-perk", async (c) => {
 app.hono.post("/decentral-perk", async (c) => {
   const body = await c.req.json();
 
-  const baseUrlReservoir = process.env.RESERVOIR_API_URL;
   const baseUrlNeynarV2 = process.env.BASE_URL_NEYNAR_V2;
+  const baseUrlReservoir = process.env.BASE_URL_RESEVOIR;
 
   const { isValid, message } = await validateFramesMessage(body);
   const castFid = message?.data.frameActionBody.castId?.fid as number;
