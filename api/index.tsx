@@ -66,7 +66,7 @@ app.hono.post("/decentral-perk", async (c) => {
     const username = data?.profileName || '';
 
     try {
-        const responseUserData = await fetch(`${baseUrlNeynarV2}/user/bulk?fids=${castFid}`, {
+        const responseUserData = await fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${castFid}`, {
           method: 'GET',
           headers: {
             'accept': 'application/json',
