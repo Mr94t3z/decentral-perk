@@ -22,8 +22,6 @@ const CAST_INTENS =
 const CHANNEL_URL = 
   "https://warpcast.com/~/channel/decentral-perk";
 
-const tokenAddress = process.env.DECENTRAL_PERK_REWARDS_CARD_NFT_TOKEN_ADDRESS;
-
 init(process.env.AIRSTACK_API_KEY as string);
 
 export const app = new Frog({
@@ -52,6 +50,7 @@ app.hono.post("/decentral-perk", async (c) => {
 
   const baseUrlNeynarV2 = process.env.BASE_URL_NEYNAR_V2;
   const baseUrlReservoir = process.env.BASE_URL_RESEVOIR;
+  const tokenAddress = process.env.DECENTRAL_PERK_REWARDS_CARD_NFT_TOKEN_ADDRESS;
 
   const { isValid, message } = await validateFramesMessage(body);
   const castFid = message?.data.frameActionBody.castId?.fid as number;
@@ -144,7 +143,6 @@ app.frame("/", (c) => {
       <Box
         grow
         alignVertical="center"
-        // backgroundImage={`url(${BG_IMAGE_URL})`}
         backgroundColor="bg"
         padding="32"
         height="100%"
