@@ -148,7 +148,6 @@ app.frame("/", (c) => {
         backgroundColor="bg"
         padding="32"
         height="100%"
-        border="1em solid rgb(255,255,255)"
       >
         <Image 
           src="/nft.png"
