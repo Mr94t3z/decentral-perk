@@ -1,6 +1,6 @@
 import {
   init,
-  getFarcasterUserDetails,
+  // getFarcasterUserDetails,
   validateFramesMessage,
 } from "@airstack/frames";
 import { Frog, Button, TextInput } from "frog";
@@ -76,7 +76,7 @@ app.hono.post("/decentral-perk", async (c) => {
       const userFarcasterData = await responseUserData.json();
       const userData = userFarcasterData.users[0];
 
-      const username = userData.display_name;
+      const username = userData.username;
   
       // User connected wallet addresses
       const ethAddresses = userData.verified_addresses.eth_addresses.map((address: string) => address.toLowerCase());
