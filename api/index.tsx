@@ -55,15 +55,15 @@ app.hono.post("/decentral-perk", async (c) => {
   const { isValid, message } = await validateFramesMessage(body);
   const castFid = message?.data.frameActionBody.castId?.fid as number;
   if (isValid) {
-    const { data, error } = await getFarcasterUserDetails({
-      fid: castFid,
-    });
+    // const { data, error } = await getFarcasterUserDetails({
+    //   fid: castFid,
+    // });
 
-    const username = data?.profileName;
+    // const username = data?.profileName;
 
-    if (error) {
-      return c.json({ message: "Error. Try Again." }, 500);
-    }
+    // if (error) {
+    //   return c.json({ message: "Error. Try Again." }, 500);
+    // }
     try {
       const responseUserData = await fetch(`${baseUrlNeynarV2}/user/bulk?fids=${castFid}`, {
           method: 'GET',
@@ -76,7 +76,7 @@ app.hono.post("/decentral-perk", async (c) => {
       const userFarcasterData = await responseUserData.json();
       const userData = userFarcasterData.users[0];
 
-      // const username = userData.username;
+      const username = userData.display_name;
   
       // User connected wallet addresses
       const ethAddresses = userData.verified_addresses.eth_addresses.map((address: string) => address.toLowerCase());
