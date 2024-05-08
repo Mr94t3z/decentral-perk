@@ -59,6 +59,8 @@ app.hono.post("/decentral-perk", async (c) => {
       fid: castFid,
     });
 
+    const username = data?.profileName;
+
     if (error) {
       return c.json({ message: "Error. Try Again." }, 500);
     }
@@ -74,7 +76,7 @@ app.hono.post("/decentral-perk", async (c) => {
       const userFarcasterData = await responseUserData.json();
       const userData = userFarcasterData.users[0];
 
-      const username = userData.username;
+      // const username = userData.username;
   
       // User connected wallet addresses
       const ethAddresses = userData.verified_addresses.eth_addresses.map((address: string) => address.toLowerCase());
@@ -170,15 +172,16 @@ app.frame("/search", (c) => {
         grow
         alignVertical="center"
         backgroundColor="white"
-        padding="32"
+        padding="48"
+        textAlign="center"
         height="100%"
       >
         <VStack gap="4">
           <Heading color="fcPurple" decoration="underline" weight="900" align="center" size="32">
             DP Rewards Checker
           </Heading>
-          <Spacer size="10" />
-          <Text align="center" color="green" size="16">
+          <Spacer size="16" />
+          <Text align="center" color="green" size="18">
             This action will check the number of $DP#5 tokens you have in your wallet.
           </Text>
           <Spacer size="22" />
@@ -259,7 +262,8 @@ app.frame("/result", async (c) => {
                     grow
                     alignVertical="center"
                     backgroundColor="white"
-                    padding="32"
+                    padding="48"
+                    textAlign="center"
                     height="100%"
                 >
                     <VStack gap="4">
@@ -291,14 +295,15 @@ app.frame("/result", async (c) => {
                     grow
                     alignVertical="center"
                     backgroundColor="white"
-                    padding="32"
+                    padding="48"
+                    textAlign="center"
                     height="100%"
                 >
                     <VStack gap="4">
                         <Heading color="fcPurple" decoration="underline" weight="900" align="center" size="32">
                             Error
                         </Heading>
-                        <Spacer size="10" />
+                        <Spacer size="16" />
                         <Text align="center" color="red" size="16">
                             User data not found.
                         </Text>
@@ -324,14 +329,15 @@ app.frame("/result", async (c) => {
               grow
               alignVertical="center"
               backgroundColor="white"
-              padding="32"
+              padding="48"
+              textAlign="center"
               height="100%"
           >
               <VStack gap="4">
                   <Heading color="fcPurple" decoration="underline" weight="900" align="center" size="32">
                       Error
                   </Heading>
-                  <Spacer size="10" />
+                  <Spacer size="16" />
                   <Text align="center" color="red" size="16">
                       Uh oh, something went wrong. Try again.
                   </Text>
